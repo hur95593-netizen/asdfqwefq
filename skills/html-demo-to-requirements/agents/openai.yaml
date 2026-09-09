@@ -1,0 +1,4 @@
+interface:
+  display_name: "HTML Demo → 前端需求说明文档"
+  short_description: "分析多入口或 SPA 原型，提取交互需求、排除复用模块并备份 mock 数据"
+  default_prompt: "使用 $html-demo-to-requirements 分析我提供的 Demo 文件夹，生成前端需求 Markdown、mock 数据备份和完整性报告。"

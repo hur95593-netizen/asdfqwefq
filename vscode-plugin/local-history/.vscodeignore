@@ -2,6 +2,7 @@
 test/**
 out/test/**
 src/**
+release/**
 **/*.ts
 **/*.map
 tsconfig.json

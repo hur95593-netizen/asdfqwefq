@@ -1,3 +1,5 @@
 node_modules/
 out/
 *.vsix
+# 发布产物要进版本库
+!release/*.vsix

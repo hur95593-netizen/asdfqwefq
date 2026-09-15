@@ -1,0 +1,493 @@
+{
+  "name": "vscode-local-history",
+  "displayName": "Local History",
+  "description": "WebStorm 风格的本地文件历史记录：自动快照、时间轴 + 原生 diff、标签、片段级恢复、已删除文件恢复。零依赖，不需要 Git。",
+  "version": "1.0.0",
+  "publisher": "hur95593",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hur95593-netizen/asdfqwefq.git",
+    "directory": "vscode-plugin/local-history"
+  },
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "categories": [
+    "SCM Providers",
+    "Other"
+  ],
+  "keywords": [
+    "local history",
+    "file history",
+    "webstorm",
+    "backup",
+    "snapshot",
+    "undo"
+  ],
+  "main": "./out/src/extension.js",
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "localHistory.showHistory",
+        "title": "显示文件历史",
+        "category": "Local History",
+        "icon": "$(history)"
+      },
+      {
+        "command": "localHistory.showRecentChanges",
+        "title": "显示最近变更",
+        "category": "Local History",
+        "icon": "$(list-tree)"
+      },
+      {
+        "command": "localHistory.takeSnapshot",
+        "title": "为当前文件创建快照",
+        "category": "Local History",
+        "icon": "$(device-camera)"
+      },
+      {
+        "command": "localHistory.addLabel",
+        "title": "为最新版本添加标签",
+        "category": "Local History",
+        "icon": "$(tag)"
+      },
+      {
+        "command": "localHistory.clearHistory",
+        "title": "清除当前文件历史",
+        "category": "Local History",
+        "icon": "$(clear-all)"
+      },
+      {
+        "command": "localHistory.purgeAllHistory",
+        "title": "清除全部历史",
+        "category": "Local History",
+        "icon": "$(trash)"
+      },
+      {
+        "command": "localHistory.showStorage",
+        "title": "存储统计与管理",
+        "category": "Local History",
+        "icon": "$(database)"
+      },
+      {
+        "command": "localHistory.runCleanup",
+        "title": "立即执行清理",
+        "category": "Local History"
+      },
+      {
+        "command": "localHistory.rollbackToTime",
+        "title": "将工作区回滚到某个时间点",
+        "category": "Local History",
+        "icon": "$(discard)"
+      },
+      {
+        "command": "localHistory.restoreSelection",
+        "title": "把选中的历史内容恢复到当前文件",
+        "category": "Local History",
+        "icon": "$(arrow-right)"
+      },
+      {
+        "command": "localHistory.restoreHunks",
+        "title": "选择要恢复的变更块",
+        "category": "Local History",
+        "icon": "$(git-pull-request-go-to-changes)"
+      },
+      {
+        "command": "localHistory.setEncryptionPassphrase",
+        "title": "设置历史存储加密口令",
+        "category": "Local History"
+      },
+      {
+        "command": "localHistory.openVersionDiff",
+        "title": "与当前版本对比",
+        "category": "Local History",
+        "icon": "$(git-compare)"
+      },
+      {
+        "command": "localHistory.restoreVersion",
+        "title": "还原到此版本",
+        "category": "Local History",
+        "icon": "$(discard)"
+      },
+      {
+        "command": "localHistory.labelVersion",
+        "title": "添加/修改标签",
+        "category": "Local History",
+        "icon": "$(tag)"
+      },
+      {
+        "command": "localHistory.deleteVersion",
+        "title": "删除此版本",
+        "category": "Local History",
+        "icon": "$(trash)"
+      },
+      {
+        "command": "localHistory.exportVersion",
+        "title": "导出此版本",
+        "category": "Local History",
+        "icon": "$(save-as)"
+      },
+      {
+        "command": "localHistory.restoreDeletedFile",
+        "title": "恢复已删除的文件",
+        "category": "Local History",
+        "icon": "$(cloud-download)"
+      },
+      {
+        "command": "localHistory.refreshViews",
+        "title": "刷新",
+        "category": "Local History",
+        "icon": "$(refresh)"
+      }
+    ],
+    "submenus": [
+      {
+        "id": "localHistory.submenu",
+        "label": "Local History"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "submenu": "localHistory.submenu",
+          "group": "2_localhistory",
+          "when": "resourceScheme == file"
+        }
+      ],
+      "explorer/context": [
+        {
+          "submenu": "localHistory.submenu",
+          "group": "6_localhistory",
+          "when": "resourceScheme == file"
+        }
+      ],
+      "editor/title/context": [
+        {
+          "submenu": "localHistory.submenu",
+          "group": "2_localhistory",
+          "when": "resourceScheme == file"
+        }
+      ],
+      "localHistory.submenu": [
+        {
+          "command": "localHistory.showHistory",
+          "group": "1_show@1",
+          "when": "!explorerResourceIsFolder"
+        },
+        {
+          "command": "localHistory.showRecentChanges",
+          "group": "1_show@2"
+        },
+        {
+          "command": "localHistory.takeSnapshot",
+          "group": "2_edit@1",
+          "when": "!explorerResourceIsFolder"
+        },
+        {
+          "command": "localHistory.addLabel",
+          "group": "2_edit@2",
+          "when": "!explorerResourceIsFolder"
+        },
+        {
+          "command": "localHistory.clearHistory",
+          "group": "3_danger@1",
+          "when": "!explorerResourceIsFolder"
+        }
+      ],
+      "view/title": [
+        {
+          "command": "localHistory.takeSnapshot",
+          "when": "view == localHistory.fileHistory",
+          "group": "navigation@1"
+        },
+        {
+          "command": "localHistory.showHistory",
+          "when": "view == localHistory.fileHistory",
+          "group": "navigation@2"
+        },
+        {
+          "command": "localHistory.refreshViews",
+          "when": "view == localHistory.fileHistory || view == localHistory.recentChanges || view == localHistory.deletedFiles",
+          "group": "navigation@3"
+        },
+        {
+          "command": "localHistory.rollbackToTime",
+          "when": "view == localHistory.recentChanges",
+          "group": "navigation@1"
+        },
+        {
+          "command": "localHistory.showStorage",
+          "when": "view == localHistory.recentChanges",
+          "group": "1_manage@1"
+        },
+        {
+          "command": "localHistory.purgeAllHistory",
+          "when": "view == localHistory.recentChanges",
+          "group": "1_manage@2"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "localHistory.openVersionDiff",
+          "when": "viewItem == localHistory.version",
+          "group": "inline@1"
+        },
+        {
+          "command": "localHistory.restoreVersion",
+          "when": "viewItem == localHistory.version",
+          "group": "1_restore@1"
+        },
+        {
+          "command": "localHistory.restoreHunks",
+          "when": "viewItem == localHistory.version",
+          "group": "1_restore@2"
+        },
+        {
+          "command": "localHistory.labelVersion",
+          "when": "viewItem == localHistory.version",
+          "group": "2_edit@1"
+        },
+        {
+          "command": "localHistory.exportVersion",
+          "when": "viewItem == localHistory.version",
+          "group": "2_edit@2"
+        },
+        {
+          "command": "localHistory.deleteVersion",
+          "when": "viewItem == localHistory.version",
+          "group": "3_danger@1"
+        },
+        {
+          "command": "localHistory.restoreDeletedFile",
+          "when": "viewItem == localHistory.deletedFile",
+          "group": "inline@1"
+        },
+        {
+          "command": "localHistory.showHistory",
+          "when": "viewItem == localHistory.deletedFile || viewItem == localHistory.changedFile",
+          "group": "1_show@1"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "localHistory.openVersionDiff",
+          "when": "false"
+        },
+        {
+          "command": "localHistory.restoreVersion",
+          "when": "false"
+        },
+        {
+          "command": "localHistory.labelVersion",
+          "when": "false"
+        },
+        {
+          "command": "localHistory.deleteVersion",
+          "when": "false"
+        },
+        {
+          "command": "localHistory.exportVersion",
+          "when": "false"
+        },
+        {
+          "command": "localHistory.restoreDeletedFile",
+          "when": "false"
+        },
+        {
+          "command": "localHistory.refreshViews",
+          "when": "false"
+        }
+      ]
+    },
+    "keybindings": [
+      {
+        "command": "localHistory.showHistory",
+        "key": "ctrl+shift+h",
+        "mac": "cmd+shift+h",
+        "when": "editorTextFocus && resourceScheme == file"
+      },
+      {
+        "command": "localHistory.showRecentChanges",
+        "key": "ctrl+alt+shift+h",
+        "mac": "cmd+alt+shift+h"
+      },
+      {
+        "command": "localHistory.restoreSelection",
+        "key": "ctrl+alt+r",
+        "mac": "cmd+alt+r",
+        "when": "editorTextFocus && resourceScheme == local-history"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "localHistory",
+          "title": "Local History",
+          "icon": "resources/activity-bar.svg"
+        }
+      ]
+    },
+    "views": {
+      "localHistory": [
+        {
+          "id": "localHistory.fileHistory",
+          "name": "File History"
+        },
+        {
+          "id": "localHistory.recentChanges",
+          "name": "Recent Changes"
+        },
+        {
+          "id": "localHistory.deletedFiles",
+          "name": "Deleted Files"
+        }
+      ]
+    },
+    "viewsWelcome": [
+      {
+        "view": "localHistory.fileHistory",
+        "contents": "打开一个工作区中的文件即可查看它的本地历史。\n[创建快照](command:localHistory.takeSnapshot)"
+      },
+      {
+        "view": "localHistory.deletedFiles",
+        "contents": "还没有记录到被删除的文件。"
+      }
+    ],
+    "configuration": {
+      "title": "Local History",
+      "properties": {
+        "localHistory.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "启用本地历史记录。"
+        },
+        "localHistory.trigger.onSave": {
+          "type": "boolean",
+          "default": true,
+          "description": "保存文件时创建快照。"
+        },
+        "localHistory.trigger.onPause": {
+          "type": "boolean",
+          "default": true,
+          "description": "停止输入一段时间后为未保存的内容创建快照。"
+        },
+        "localHistory.trigger.onClose": {
+          "type": "boolean",
+          "default": true,
+          "description": "关闭编辑器标签页时创建快照。"
+        },
+        "localHistory.trigger.onExternalChange": {
+          "type": "boolean",
+          "default": true,
+          "description": "监听文件系统，捕获 VSCode 之外的工具对文件的修改。"
+        },
+        "localHistory.debounceSeconds": {
+          "type": "number",
+          "default": 3,
+          "minimum": 1,
+          "maximum": 600,
+          "description": "编辑停顿多少秒后触发快照。"
+        },
+        "localHistory.mergeWindowSeconds": {
+          "type": "number",
+          "default": 5,
+          "minimum": 0,
+          "maximum": 3600,
+          "description": "该时间窗口内的连续变更合并为同一个版本（带标签的版本不会被合并）。"
+        },
+        "localHistory.maxVersionsPerFile": {
+          "type": "number",
+          "default": 100,
+          "minimum": 1,
+          "description": "单个文件最多保留的版本数。"
+        },
+        "localHistory.maxAgeDays": {
+          "type": "number",
+          "default": 30,
+          "minimum": 0,
+          "description": "历史记录最大保留天数，0 表示不限制。"
+        },
+        "localHistory.maxTotalSizeMB": {
+          "type": "number",
+          "default": 500,
+          "minimum": 0,
+          "description": "历史存储总大小上限（MB），0 表示不限制。"
+        },
+        "localHistory.largeFileThresholdKB": {
+          "type": "number",
+          "default": 1024,
+          "minimum": 1,
+          "description": "大文件阈值（KB）。超过该大小的文件只在保存和手动触发时创建快照。"
+        },
+        "localHistory.maxFileSizeMB": {
+          "type": "number",
+          "default": 16,
+          "minimum": 0,
+          "description": "超过该大小的文件完全不记录历史，0 表示不限制。"
+        },
+        "localHistory.exclude": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "**/node_modules/**",
+            "**/dist/**",
+            "**/build/**",
+            "**/out/**",
+            "**/.git/**",
+            "**/*.log",
+            "**/*.tmp"
+          ],
+          "description": "不记录历史的 glob 模式。"
+        },
+        "localHistory.storageDirName": {
+          "type": "string",
+          "default": ".local-history",
+          "description": "历史数据在工作区中的目录名。"
+        },
+        "localHistory.addToGitignore": {
+          "type": "boolean",
+          "default": true,
+          "description": "自动把历史存储目录写入工作区的 .gitignore。"
+        },
+        "localHistory.keepBackupBeforeRestore": {
+          "type": "boolean",
+          "default": true,
+          "description": "还原之前先为当前内容创建一个备份快照。"
+        },
+        "localHistory.confirmRestore": {
+          "type": "boolean",
+          "default": true,
+          "description": "还原文件前弹出确认框。"
+        },
+        "localHistory.searchMaxVersions": {
+          "type": "number",
+          "default": 300,
+          "minimum": 1,
+          "description": "内容搜索时最多扫描的版本数量。"
+        },
+        "localHistory.encryption.enabled": {
+          "type": "boolean",
+          "default": false,
+          "description": "加密存储历史内容（AES-256-GCM）。口令保存在 VSCode SecretStorage 中，丢失后历史将无法读取。"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "test": "tsc -p ./ && node --test \"out/test/*.test.js\"",
+    "vscode:prepublish": "npm run compile"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.30",
+    "@types/vscode": "^1.80.0",
+    "typescript": "^5.4.5"
+  }
+}
